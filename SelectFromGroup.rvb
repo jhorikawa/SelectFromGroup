@@ -1,0 +1,35 @@
+Option Explicit
+'Script written by <Junichiro Horikawa>
+'Script copyrighted by <Junichiro Horikawa>
+'Script version Monday, 07 November 2011 12:46:27
+
+Call Main()
+Sub Main()
+	Dim arrObjects,arrObjects2,strObject,strObject2,arrSelect()
+	
+	arrObjects = Rhino.GetObjects("Select Objects To Select From",, True, True)
+	If Not IsArray(arrObjects) Then Exit Sub
+	arrObjects2 = Rhino.GetObjects("Select Objects To Select",, False, False)
+	If Not IsArray(arrObjects2) Then Exit Sub
+	
+	Rhino.EnableRedraw(False)
+	
+	Dim count2: count2 = 0
+	ReDim Preserve arrSelect(count2)
+	For Each strObject In arrObjects
+		For Each strObject2 In arrObjects2
+			If 	strObject2 = strObject Then
+				ReDim Preserve arrSelect(count2): arrSelect(count2) = strObject
+				count2 = count2 + 1
+			End If
+		Next
+	Next
+	
+	Rhino.UnselectAllObjects
+	Dim strSelect
+	If UBound(arrSelect) > 0 Then
+		Rhino.SelectObjects(arrSelect)
+	End If
+	
+	Rhino.EnableRedraw(True)
+End Sub
